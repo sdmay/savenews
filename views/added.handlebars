@@ -1,0 +1,10 @@
+<div id ="article">
+<ol class="list-group">
+    {{#each object}}
+    <li class="title">{{title}}<br>
+        <a href="{{link}}" target="_blank" class="link"/><button class="link">Read</button></a><br>
+        <button class="saved" data-id="{{_id}}">Save</button>
+    </li>
+    {{/each}}
+</ol>
+</div>
