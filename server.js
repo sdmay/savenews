@@ -122,7 +122,7 @@ app.post("/submit/:id", function (req, res) {
 app.get("/saved", function (req, res) {
     console.log("INIT TO WINIT")    
         Article.find({saved: true}), function (error, found) {
-            console.log(error)
+            console.log(found)
         // Log any errors
         if (error) {
             console.log("FAIL")
@@ -147,6 +147,6 @@ app.get("/empty", (req, res) => {
 });
 
 // Listen on port 3000
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log("App running on port 3000!");
 });
