@@ -2,9 +2,35 @@
 <ol class="list-group">
     {{#each object}}
     <li class="title">{{title}}<br>
-        <a href="{{link}}" target="_blank" class="link"/><button class="link">Read</button></a><br>
-        <button class="saved" data-id="{{_id}}">Save</button>
+        <a href="{{link}}" target="_blank" class="link"/><button class="link">Read</button></a><br><button class="readanote" data-id="{{_id}}">Read a Note</button>
+        <button class="saved" data-id="{{_id}}">Save</button><button class="leaveanote" data-id="{{_id}}">Leave a Note</button>
     </li>
     {{/each}}
 </ol>
+</div>
+
+<!--MODAL CONTENT-->
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+          {{this.title}}
+        <textarea>
+
+        </textarea>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default buttonSave" data-id="{{this._id}}" data-dismiss="modal">SAVE</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
 </div>

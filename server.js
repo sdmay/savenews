@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 
+var User = require("./models/User.js");
 var Note = require("./models/Note.js");
 var Article = require("./models/Article.js");
 // var Saved = require("./models/Saved.js");
@@ -42,10 +43,25 @@ db.on("error", function (error) {
 db.once("open", function () {
     console.log("Mongoose connection successful.");
 });
+var exampleUser = new User({
+    name: "Stevie Wonder"
+});
+// Using the save method in mongoose, we create our example user in the db
+exampleUser.save(function (error, doc) {
+    // Log any errors
+    if (error) {
+        console.log(error);
+    }
+    // Or log the doc
+    else {
+        console.log(doc);
+    }
+});
 
 app.get("/", function (req, res) {
     res.redirect("/articles");
 });
+
 app.get("/scrape", function (req, res) {
     // First, we grab the body of the html with request
     request("https://news.google.com/", function (error, response, html) {
@@ -53,14 +69,12 @@ app.get("/scrape", function (req, res) {
         var $ = cheerio.load(html);
         // Now, we grab every h2 within an article tag, and do the following:
         $('.esc-lead-article-title').each(function (i, element) {
-
-            // Save an empty result object
             var result = {};
+            for (var i = 0; i < 3; i++) {
 
-            // Add the text and href of every link, and save them as properties of the result object
-            result.title = $(this).children("a").text();
-            result.link = $(this).children("a").attr("href");
-
+                result.title = $(this).children("a").text();
+                result.link = $(this).children("a").attr("href");
+            }
             // Using our Article model, create a new entry
             // This effectively passes the result object to the entry (and the title and link)
             var entry = new Article(result);
@@ -80,7 +94,7 @@ app.get("/scrape", function (req, res) {
         });
     });
     // Tell the browser that we finished scraping the text
-    res.redirect("/articles")
+    res.redirect("/")
 });
 
 // This will get the articles we scraped from the mongoDB
@@ -101,41 +115,85 @@ app.get("/articles", function (req, res) {
 
 app.post("/submit/:id", function (req, res) {
     // console.log(req.body)
-  
+
     console.log(req.params.id)
 
     Article.findOneAndUpdate(
         {
-            _id : req.params.id
+            _id: req.params.id
         },
-        { $set: { saved: true } },
+        { $set: { saved: true } 
         
-    
+    },
 
-    function(err, doc){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-    }
-)
+
+
+        function (err, doc) {
+            if (err) return res.send(500, { error: err });
+            return res.send("succesfully saved");
+        }
+    )
 })
 
 app.get("/saved", function (req, res) {
-    console.log("INIT TO WINIT")    
-        Article.find({saved: true}), function (error, found) {
-            console.log(found)
+    console.log("INIT TO WINIT")
+    var a =2;
+    var b =2;
+    console.log(a +b)
+     Article.find({saved:true}, function (error, found) {
         // Log any errors
         if (error) {
-            console.log("FAIL")
-            console.log(error);
+           res.send(error);
         }
         // Or send the doc to the browser as a json object
         else {
-            console.log(found)
-            res.render("saved", { object: found })
+            console.log(found);
+            res.render("saved", {object: found});
         }
-    }
-        
+    });
+   
+
 });
+
+
+app.post("/notes/:id", function (req, res) {
+
+    var note = new Note(result);
+
+    note.save(function (err, note) {
+
+        if (err) {
+            console.log(err);
+        }
+
+        else {
+            console.log(note);
+        }
+    });
+
+});
+
+app.post("/unsave/:id", function (req, res) {
+    // console.log(req.body)
+
+    console.log(req.params.id)
+
+    Article.findOneAndUpdate(
+        {
+            _id: req.params.id
+        },
+        { $set: { saved: false } 
+        
+    },
+
+
+
+        function (err, doc) {
+            if (err) return res.send(500, { error: err });
+            return res.send("succesfully saved");
+        }
+    )
+})
 
 
 

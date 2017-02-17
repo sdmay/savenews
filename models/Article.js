@@ -15,7 +15,13 @@ var ArticleSchema = new Schema({
   saved: {
       type: Boolean,
       default: false
-  }
+  },
+   note: [{
+    // Store ObjectIds in the array
+    type: Schema.Types.ObjectId,
+    // The ObjectIds will refer to the ids in the Note model
+    ref: "Note"
+  }]
 
 });
 
